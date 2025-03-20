@@ -90,5 +90,6 @@ class ExpenseView {
                 li.append(deleteBtn);
             });
         }
+        console.log(expenses);
     }
 }
