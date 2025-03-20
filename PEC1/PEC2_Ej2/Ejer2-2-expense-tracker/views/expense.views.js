@@ -59,6 +59,23 @@ class ExpenseView {
 
     }
 
+    updateBalance(amount) {
+        const total_money = parseFloat(this.balance.textContent.slice(1));
+        const new_amount = parseFloat(amount);
+        const new_total = parseFloat(total_money + new_amount).toFixed(2);
+        this.balance.textContent = '$' + new_total.toString();
+        if(new_amount > 0) {
+            const positive_balance = parseFloat(this.money_income.textContent.slice(1));
+            const new_positive = parseFloat(positive_balance + new_amount).toFixed(2);
+            this.money_income.textContent = '$' + new_positive.toString();
+        }
+        else {
+            const negative_balance = parseFloat(this.money_expense.textContent.slice(1));
+            const new_negative = parseFloat(negative_balance + new_amount).toFixed(2);
+            this.money_expense.textContent = '$' + new_negative.toString();
+        }
+    }
+
     createElement(tag, className) {
         const element = document.createElement(tag);
         if(className) {
@@ -77,6 +94,7 @@ class ExpenseView {
             event.preventDefault();
             if(this.input1.value && this.input2.value) {
                 handler(this.input1.value, this.input2.value);
+                this.updateBalance(this.input2.value);
                 this._resetInput();
             }
         });
