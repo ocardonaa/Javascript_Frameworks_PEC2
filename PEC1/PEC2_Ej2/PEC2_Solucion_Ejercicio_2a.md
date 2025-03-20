@@ -10,4 +10,4 @@ handleAddTodo = todoText => {
     this.service.addTodo(todoText);
   };
 
-  todoText es el contexto que le falta, que aquí lo especifica y por eso se puede completar el añadir la tarea
+todoText es el contexto que le falta, que aquí lo especifica y por eso se puede completar el añadir la tarea

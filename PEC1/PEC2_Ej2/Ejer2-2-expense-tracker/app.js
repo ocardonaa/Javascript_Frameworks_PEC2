@@ -1,1 +1,1 @@
-//const app = new ExpenseController(new ExpenseService(), new ExpenseView());
+const app = new ExpenseController(new ExpenseService(), new ExpenseView());
