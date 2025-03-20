@@ -12,18 +12,29 @@ class ExpenseView {
         this.balance.textContent = '$0.00';
         this.balance_title = this.createElement('h4');
         this.balance_title.textContent = 'YOUR BALANCE';
-        this.balance.textContent = 'YOUR BALANCE';
-        this.inc_container = this.createElement('inc-exp-container');
-        this.income = this.createElement('h4');
-        this.expense = this.createElement('h4');
-        this.money_income = this.createElement('p', 'money-plus');
-        this.money_income.textContent = '$0.00';
-        this.money_expense = this.createElement('p', 'money-minus');
-        this.money_expense.textContent = '$0.00';
+        this.balance.textContent = '$0.00';
         this.history = this.createElement('h3');
+        this.history.textContent = 'History'
         this.expensesList = this.createElement('ul', 'list');
-        this.inc_container.append(this.income, this.money_income, this.expense, this.money_expense);
 
+        this.inc_container = this.createElement('div', 'inc-exp-container');
+        this.inner_inc_income = this.createElement('div')
+        this.inner_inc_expense = this.createElement('div');
+        this.income = this.createElement('h4');
+        this.income.textContent = 'INCOME';
+        this.expense = this.createElement('h4');
+        this.expense.textContent = 'EXPENSE';
+        this.money_income = this.createElement('p', 'money');
+        this.money_income.textContent = '$0.00';
+        this.money_income.classList.add('plus')
+        this.money_expense = this.createElement('p', 'money');
+        this.money_expense.textContent = '$0.00';
+        this.money_expense.classList.add('minus')
+
+        this.inner_inc_income.append(this.income, this.money_income);
+        this.inner_inc_expense.append(this.expense, this.money_expense);
+        this.inc_container.append(this.inner_inc_income, this.inner_inc_expense);
+        
         this.new_transaction = this.createElement('h3');
         this.new_transaction.textContent = 'Add new transaction';
 
@@ -36,7 +47,7 @@ class ExpenseView {
         this.input2 = this.createElement('input');
         this.label2 = this.createElement('label');
         this.input2.placeholder = 'Enter amount...';
-        this.label2.textContent = 'Amount';
+        this.label2.innerHTML = 'Amount'+ '<br>' + '(negative-expense, positive-income)';
         this.input2.type = 'number';
         this.transactionButton = this.createElement('button', 'btn');
         this.transactionButton.textContent = 'Add transaction';
@@ -68,7 +79,8 @@ class ExpenseView {
                 handler(this.input1.value, this.input2.value);
                 this._resetInput();
             }
-        })
+        });
+        
     }
 
     bindDeleteExpense(handler) {
