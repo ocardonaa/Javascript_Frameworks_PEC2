@@ -59,23 +59,6 @@ class ExpenseView {
 
     }
 
-    updateBalance(amount) {
-        const total_money = parseFloat(this.balance.textContent.slice(1));
-        const new_amount = parseFloat(amount);
-        const new_total = parseFloat(total_money + new_amount).toFixed(2);
-        this.balance.textContent = '$' + new_total.toString();
-        if(new_amount > 0) {
-            const positive_balance = parseFloat(this.money_income.textContent.slice(1));
-            const new_positive = parseFloat(positive_balance + new_amount).toFixed(2);
-            this.money_income.textContent = '$' + new_positive.toString();
-        }
-        else {
-            const negative_balance = parseFloat(this.money_expense.textContent.slice(1));
-            const new_negative = parseFloat(negative_balance + new_amount).toFixed(2);
-            this.money_expense.textContent = '$' + new_negative.toString();
-        }
-    }
-
     createElement(tag, className) {
         const element = document.createElement(tag);
         if(className) {
@@ -94,7 +77,6 @@ class ExpenseView {
             event.preventDefault();
             if(this.input1.value && this.input2.value) {
                 handler(this.input1.value, this.input2.value);
-                this.updateBalance(this.input2.value);
                 this._resetInput();
             }
         });
@@ -107,17 +89,36 @@ class ExpenseView {
                 const id = event.target.parentElement.id;
                 handler(id);
             }
-        })
+        });
     }
 
     displayExpenses(expenses) {
+
+        while(this.expensesList.firstChild) {
+            this.expensesList.removeChild(this.expensesList.firstChild);
+        }
+        let total_amount = 0;
+        let positive_amount = 0;
+        let negative_amount = 0;
         if(expenses.length !== 0) {
             expenses.forEach(expense => {
-                const li = (expense.value > 0) ? document.createElement('li', 'plus') : document.createElement('li', 'minus');
+                const li = document.createElement('li');
+                const aux_amount = parseFloat(expense.amount).toFixed(2);
+                total_amount += aux_amount;
+                if(aux_amount > 0) {
+                    li.classList.add('plus');
+                    positive_amount += aux_amount
+                }
+                else {
+                    li.classList.add('minus');
+                    negative_amount += 0;
+                }
                 li.id = expense.id;
+                li.textContent = expense.text;
                 const deleteBtn = this.createElement('button', 'delete-btn');
                 deleteBtn.textContent = 'X';
                 li.append(deleteBtn);
+                this.expensesList.append(li);
             });
         }
         console.log(expenses);
