@@ -76,7 +76,7 @@ class ExpenseView {
         this.form,addEventListener('submit', event => {
             event.preventDefault();
             if(this.input1.value && this.input2.value) {
-                handler(this.input1.value, this.input2.value);
+                handler(this.input1.value, parseFloat(this.input2.value));
                 this._resetInput();
             }
         });
@@ -92,6 +92,10 @@ class ExpenseView {
         });
     }
 
+    updateBalance(element, amount) {
+        element.textContent = '$' + (amount.toFixed(2)).toString();
+    }
+
     displayExpenses(expenses) {
 
         while(this.expensesList.firstChild) {
@@ -103,15 +107,15 @@ class ExpenseView {
         if(expenses.length !== 0) {
             expenses.forEach(expense => {
                 const li = document.createElement('li');
-                const aux_amount = parseFloat(expense.amount).toFixed(2);
+                const aux_amount = parseFloat(expense.amount);
                 total_amount += aux_amount;
                 if(aux_amount > 0) {
                     li.classList.add('plus');
-                    positive_amount += aux_amount
+                    positive_amount += aux_amount;
                 }
                 else {
                     li.classList.add('minus');
-                    negative_amount += 0;
+                    negative_amount += aux_amount;
                 }
                 li.id = expense.id;
                 li.textContent = expense.text;
@@ -119,6 +123,9 @@ class ExpenseView {
                 deleteBtn.textContent = 'X';
                 li.append(deleteBtn);
                 this.expensesList.append(li);
+                this.updateBalance(this.balance, total_amount);
+                this.updateBalance(this.money_income, positive_amount);
+                this.updateBalance(this.money_expense, negative_amount*-1);
             });
         }
         console.log(expenses);
