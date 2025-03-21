@@ -13,6 +13,7 @@ class ExpenseView {
         this.balance_title = this.createElement('h4');
         this.balance_title.textContent = 'YOUR BALANCE';
         this.balance.textContent = '$0.00';
+
         this.history = this.createElement('h3');
         this.history.textContent = 'History'
         this.expensesList = this.createElement('ul', 'list');
@@ -34,7 +35,7 @@ class ExpenseView {
         this.inner_inc_income.append(this.income, this.money_income);
         this.inner_inc_expense.append(this.expense, this.money_expense);
         this.inc_container.append(this.inner_inc_income, this.inner_inc_expense);
-        
+
         this.new_transaction = this.createElement('h3');
         this.new_transaction.textContent = 'Add new transaction';
 
@@ -47,7 +48,7 @@ class ExpenseView {
         this.input2 = this.createElement('input');
         this.label2 = this.createElement('label');
         this.input2.placeholder = 'Enter amount...';
-        this.label2.innerHTML = 'Amount'+ '<br>' + '(negative-expense, positive-income)';
+        this.label2.innerHTML = 'Amount' + '<br>' + '(negative-expense, positive-income)';
         this.input2.type = 'number';
         this.transactionButton = this.createElement('button', 'btn');
         this.transactionButton.textContent = 'Add transaction';
@@ -57,14 +58,21 @@ class ExpenseView {
 
         document.body.append(this.title, this.container);
 
+        this._temporaryName = '';
+        this._initListener();
+
     }
 
     createElement(tag, className) {
         const element = document.createElement(tag);
-        if(className) {
+        if (className) {
             element.classList.add(className);
         }
         return element;
+    }
+
+    _updateBalance(element, amount) {
+        element.textContent = '$' + (amount.toFixed(2)).toString();
     }
 
     _resetInput() {
@@ -72,44 +80,67 @@ class ExpenseView {
         this.input2.value = "";
     }
 
+    _initListener() {
+        this.expensesList.addEventListener("input", event => {
+            if (event.target.className === "plus" || event.target.className === "minus") {
+                this._temporaryName = event.target.innerText;
+            }
+        });
+    }
+
+    _fixName() {
+        const lastChar = this._temporaryName[this._temporaryName.length - 1];
+        if (lastChar === 'X') {
+            const fixedName = this._temporaryName.slice(0, -1);
+            return fixedName.trim();
+        }
+        else return this._temporaryName;
+    }
+
     bindAddExpense(handler) {
-        this.form,addEventListener('submit', event => {
+        this.form, addEventListener('submit', event => {
             event.preventDefault();
-            if(this.input1.value && this.input2.value) {
+            if (this.input1.value && this.input2.value) {
                 handler(this.input1.value, parseFloat(this.input2.value));
                 this._resetInput();
             }
         });
-        
+
     }
 
     bindDeleteExpense(handler) {
         this.expensesList.addEventListener('click', event => {
-            if(event.target.className === 'delete-btn') {
+            if (event.target.className === 'delete-btn') {
                 const id = event.target.parentElement.id;
                 handler(id);
             }
         });
     }
 
-    updateBalance(element, amount) {
-        element.textContent = '$' + (amount.toFixed(2)).toString();
+    bindEditExpense(handler) {
+        this.expensesList.addEventListener('focusout', event => {
+            if (this._temporaryName) {
+                const fixedName = this._fixName();
+                const id = event.target.id;
+                handler(id, fixedName);
+                this._temporaryName = "";
+            }
+        });
     }
 
     displayExpenses(expenses) {
-
-        while(this.expensesList.firstChild) {
+        while (this.expensesList.firstChild) {
             this.expensesList.removeChild(this.expensesList.firstChild);
         }
         let total_amount = 0;
         let positive_amount = 0;
         let negative_amount = 0;
-        if(expenses.length !== 0) {
+        if (expenses.length !== 0) {
             expenses.forEach(expense => {
                 const li = document.createElement('li');
                 const aux_amount = parseFloat(expense.amount);
                 total_amount += aux_amount;
-                if(aux_amount > 0) {
+                if (aux_amount > 0) {
                     li.classList.add('plus');
                     positive_amount += aux_amount;
                 }
@@ -118,16 +149,34 @@ class ExpenseView {
                     negative_amount += aux_amount;
                 }
                 li.id = expense.id;
+                li.contentEditable = true;
                 li.textContent = expense.text;
                 const deleteBtn = this.createElement('button', 'delete-btn');
-                deleteBtn.textContent = 'X';
+                deleteBtn.innerHTML = 'X';
                 li.append(deleteBtn);
                 this.expensesList.append(li);
-                this.updateBalance(this.balance, total_amount);
-                this.updateBalance(this.money_income, positive_amount);
-                this.updateBalance(this.money_expense, negative_amount*-1);
+                this._updateBalance(this.balance, total_amount);
+                this._updateBalance(this.money_income, positive_amount);
+                this._updateBalance(this.money_expense, negative_amount * -1);
             });
         }
         console.log(expenses);
     }
 }
+
+/*
+
+En este caso hice muchos cambios y cosas
+- Para empezar hice todo el html dinámicamente desde aqui, está en la parte del constructor.
+  Este lo voy separando un poco con lineas en blanco para mayor visibilidad de cara a ver que títulos o elementos le corresponden a cada contenedor, ya sea el form, el inc-exp-container, el historial de gastos o todo el body
+- Luego tengo el metodo de createElement para de forma más eficiente
+- También he creado 4 metodos protegidos ya que no tiene sentido acceder a ellos desde fuera de la view, puesto que solo los necesitan los propios metodos de view, estos son:
+  updateBalance: para reescribir cada uno de los balances con el signo del $
+  resetInput: vacia el input del text y la cantidad del gasto
+  initListener: usado para poder actualizar los textos de los gastos (apartado g del ejercicio)
+  fixName: como el nombre que almacena temporaryName para cambiar el texto del gasto también contenia la X del boton y un salto de linea, esto lo arregla para poderse guardar correctamente, de modo que no todos los gastos terminan en \nX
+- Tras esto tenemos todos los handlers de las views. Cada handler tiene un addEventListener que en función de lo que se haga (crear un nuevo gasto, eliminar-lo o editar-lo), se triggereará y enviará la información al controller y de ahi a la capa de servicio
+- Por último displayExpenses, que muestra el listado de expenses que tenemos en el historial.
+  Este gestiona el borrar o editar una expense, las actualizaciones del balance y el añadir los nuevos gastos
+
+*/

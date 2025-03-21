@@ -13,6 +13,7 @@ class ExpenseController {
         this.service.bindExpensesListChanged(this.onExpenseListChanged);
         this.view.bindAddExpense(this.handleAddExpense);
         this.view.bindDeleteExpense(this.handleDeleteExpense);
+        this.view.bindEditExpense(this.handleEditExpense);
 
         this.onExpenseListChanged(this.service.expenses);
     }
@@ -28,4 +29,10 @@ class ExpenseController {
     handleDeleteExpense = id => {
         this.service.deleteExpense(id);
     }
+
+    handleEditExpense = (id, newText) => {
+        this.service.editExpense(id, newText);
+    }
 }
+
+// en este caso controller no cambia tanto respecto al TODO, como mucho no poniendo métodos que no usaremos

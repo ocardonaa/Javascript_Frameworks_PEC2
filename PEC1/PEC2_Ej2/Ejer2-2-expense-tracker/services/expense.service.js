@@ -26,4 +26,22 @@ class ExpenseService {
         this.expenses = this.expenses.filter(({ id }) => id !== _id);
         this._commit(this.expenses);
     }
+
+    editExpense(id, newText) {
+        this.expenses.forEach(expense => {
+            if(expense.id === id) {
+                expense.text = newText;
+            }
+        });
+        this._commit(this.expenses);
+    }
 }
+
+/* 
+
+en nuestro caso comparado con el TODO cambia ya que
+- ahora construiremos con 2 elementos, el nombre de la expense y la cantidad (text, amount)
+- no tenemos el toggle de si la el TODO está hecho o no
+- el edit lo cambié ligeramente, de modo que ahora busca el gasto con mismo id y cambia el texto
+
+*/
