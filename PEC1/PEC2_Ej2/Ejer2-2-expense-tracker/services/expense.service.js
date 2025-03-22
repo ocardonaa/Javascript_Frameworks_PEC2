@@ -10,12 +10,12 @@ class ExpenseService {
 
     bindExpensesListChanged(callback) {
         this.onExpensesListChanged = callback;
-      }
+    }
 
     _commit(expenses) {
         this.onExpensesListChanged(expenses);
         localStorage.setItem("expenses", JSON.stringify(expenses));
-      }
+    }
 
     addExpense(text, amount) {
         this.expenses.push(new Expense({ text, amount }));
@@ -27,10 +27,11 @@ class ExpenseService {
         this._commit(this.expenses);
     }
 
-    editExpense(id, newText) {
+    editExpense(id, newText, newMoney) {
         this.expenses.forEach(expense => {
-            if(expense.id === id) {
+            if (expense.id === id) {
                 expense.text = newText;
+                expense.amount = newMoney;
             }
         });
         this._commit(this.expenses);

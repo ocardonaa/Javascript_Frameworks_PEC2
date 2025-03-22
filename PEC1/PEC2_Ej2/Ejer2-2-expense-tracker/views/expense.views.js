@@ -59,6 +59,7 @@ class ExpenseView {
         document.body.append(this.title, this.container);
 
         this._temporaryName = '';
+        this._temporaryMoney = 0;
         this._initListener();
 
     }
@@ -83,18 +84,13 @@ class ExpenseView {
     _initListener() {
         this.expensesList.addEventListener("input", event => {
             if (event.target.className === "plus" || event.target.className === "minus") {
-                this._temporaryName = event.target.innerText;
+                const firstLine = event.target.innerText.slice(0, event.target.innerText.indexOf('\n'));
+                this._temporaryName = firstLine;
+            }
+            if (event.target.children[1].nodeName === "SPAN") {
+                this._temporaryMoney = event.target.children[1].textContent;
             }
         });
-    }
-
-    _fixName() {
-        const lastChar = this._temporaryName[this._temporaryName.length - 1];
-        if (lastChar === 'X') {
-            const fixedName = this._temporaryName.slice(0, -1);
-            return fixedName.trim();
-        }
-        else return this._temporaryName;
     }
 
     bindAddExpense(handler) {
@@ -119,11 +115,12 @@ class ExpenseView {
 
     bindEditExpense(handler) {
         this.expensesList.addEventListener('focusout', event => {
-            if (this._temporaryName) {
-                const fixedName = this._fixName();
+            if (this._temporaryName || this._temporaryMoney) {
+                const fixedMoney = parseFloat(this._temporaryMoney);
                 const id = event.target.id;
-                handler(id, fixedName);
+                handler(id, this._temporaryName, fixedMoney);
                 this._temporaryName = "";
+                this._temporaryMoney = 0;
             }
         });
     }
@@ -154,6 +151,11 @@ class ExpenseView {
                 const deleteBtn = this.createElement('button', 'delete-btn');
                 deleteBtn.innerHTML = 'X';
                 li.append(deleteBtn);
+                const spanMoney = document.createElement('span');
+                spanMoney.style.color = (aux_amount > 0) ? '#2ecc71' : '#c0392b';
+                spanMoney.textContent = aux_amount;
+                spanMoney.contentEditable = true;
+                li.append(spanMoney);
                 this.expensesList.append(li);
                 this._updateBalance(this.balance, total_amount);
                 this._updateBalance(this.money_income, positive_amount);

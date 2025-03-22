@@ -30,8 +30,8 @@ class ExpenseController {
         this.service.deleteExpense(id);
     }
 
-    handleEditExpense = (id, newText) => {
-        this.service.editExpense(id, newText);
+    handleEditExpense = (id, newText, newMoney) => {
+        this.service.editExpense(id, newText, newMoney);
     }
 }
 
