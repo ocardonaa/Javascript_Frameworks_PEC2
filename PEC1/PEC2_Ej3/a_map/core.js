@@ -1,17 +1,31 @@
 function multiplyBy10(array) {
-  // your code here
+  return array.map(n => n*10);
 }
 
 function shiftRight(array) {
-  // your code here
+  const lastElem = array[array.length-1];
+  array.pop();
+  array.unshift(lastElem);
+  return array;
+}
+
+function getVowels(word, vowels) {
+  let finalWord = '';
+  for (let letter of word) {
+    if(vowels.includes(letter)) {
+      finalWord += letter;
+    }
+  }
+  return finalWord;
 }
 
 function onlyVowels(array) {
-  // your code here
+  const vowels = ['a', 'e', 'i', 'o', 'u'];
+  return array.map(word => getVowels(word, vowels));
 }
 
 function doubleMatrix(array) {
-  // your code here
+  return array.map(arr => arr.map(n => n*2));
 }
 
 module.exports = {
