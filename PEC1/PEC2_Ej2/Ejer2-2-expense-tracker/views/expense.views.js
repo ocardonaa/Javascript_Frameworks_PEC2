@@ -4,11 +4,11 @@
 
 class ExpenseView {
     constructor() {
-        this.title = this.createElement("h2");
+        this.title = this.createElement('h2');
         this.title.textContent = 'Expense Tracker';
         this.container = this.createElement('container');
 
-        this.balance = this.createElement("h1");
+        this.balance = this.createElement('h1');
         this.balance.textContent = '$0.00';
         this.balance_title = this.createElement('h4');
         this.balance_title.textContent = 'YOUR BALANCE';
@@ -77,17 +77,17 @@ class ExpenseView {
     }
 
     _resetInput() {
-        this.input1.value = "";
-        this.input2.value = "";
+        this.input1.value = '';
+        this.input2.value = '';
     }
 
     _initListener() {
-        this.expensesList.addEventListener("input", event => {
-            if (event.target.className === "plus" || event.target.className === "minus") {
+        this.expensesList.addEventListener('input', event => {
+            if (event.target.className === 'plus' || event.target.className === 'minus') {
                 const firstLine = event.target.innerText.slice(0, event.target.innerText.indexOf('\n'));
                 this._temporaryName = firstLine;
             }
-            if (event.target.children[1].nodeName === "SPAN") {
+            if (event.target.children[1].nodeName === 'SPAN') {
                 this._temporaryMoney = event.target.children[1].textContent;
             }
         });
@@ -119,7 +119,7 @@ class ExpenseView {
                 const fixedMoney = parseFloat(this._temporaryMoney);
                 const id = event.target.id;
                 handler(id, this._temporaryName, fixedMoney);
-                this._temporaryName = "";
+                this._temporaryName = '';
                 this._temporaryMoney = 0;
             }
         });
@@ -171,12 +171,12 @@ class ExpenseView {
 En este caso hice muchos cambios y cosas
 - Para empezar hice todo el html dinámicamente desde aqui, está en la parte del constructor.
   Este lo voy separando un poco con lineas en blanco para mayor visibilidad de cara a ver que títulos o elementos le corresponden a cada contenedor, ya sea el form, el inc-exp-container, el historial de gastos o todo el body
-- Luego tengo el metodo de createElement para de forma más eficiente
-- También he creado 4 metodos protegidos ya que no tiene sentido acceder a ellos desde fuera de la view, puesto que solo los necesitan los propios metodos de view, estos son:
+- Luego tengo el metodo de createElement para de forma más eficiente crear elementos
+- También he creado 3 metodos protegidos ya que no tiene sentido acceder a ellos desde fuera de la view, puesto que solo los necesitan los propios metodos de view, estos son:
   updateBalance: para reescribir cada uno de los balances con el signo del $
-  resetInput: vacia el input del text y la cantidad del gasto
-  initListener: usado para poder actualizar los textos de los gastos (apartado g del ejercicio)
-  fixName: como el nombre que almacena temporaryName para cambiar el texto del gasto también contenia la X del boton y un salto de linea, esto lo arregla para poderse guardar correctamente, de modo que no todos los gastos terminan en \nX
+  resetInput: vacia el input del text y del gasto
+  initListener: usado para poder actualizar tanto el nombre del gasto como el gasto. Pone un listener en los elementos que pertenezcan a plus o minus o que el elemento hijo de este sea un span.
+  Ahi actualiza una variable global con la que cuando se llama a editExpense este contendra el texto.
 - Tras esto tenemos todos los handlers de las views. Cada handler tiene un addEventListener que en función de lo que se haga (crear un nuevo gasto, eliminar-lo o editar-lo), se triggereará y enviará la información al controller y de ahi a la capa de servicio
 - Por último displayExpenses, que muestra el listado de expenses que tenemos en el historial.
   Este gestiona el borrar o editar una expense, las actualizaciones del balance y el añadir los nuevos gastos
