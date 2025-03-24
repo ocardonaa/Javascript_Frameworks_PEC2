@@ -1,9 +1,9 @@
 function multiplyBy10(array) {
-  return array.map(n => n*10);
+  return array.map(n => n * 10);
 }
 
 function shiftRight(array) {
-  const lastElem = array[array.length-1];
+  const lastElem = array[array.length - 1];
   array.pop();
   array.unshift(lastElem);
   return array;
@@ -12,7 +12,7 @@ function shiftRight(array) {
 function getVowels(word, vowels) {
   let finalWord = '';
   for (let letter of word) {
-    if(vowels.includes(letter)) {
+    if (vowels.includes(letter)) {
       finalWord += letter;
     }
   }
@@ -25,7 +25,7 @@ function onlyVowels(array) {
 }
 
 function doubleMatrix(array) {
-  return array.map(arr => arr.map(n => n*2));
+  return array.map(arr => arr.map(n => n * 2));
 }
 
 module.exports = {
