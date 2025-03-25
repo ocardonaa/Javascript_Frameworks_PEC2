@@ -1,5 +1,5 @@
 function onlyEven(array) {
-  return array.filter(n => n % 2 === 0)
+  return array.filter(n => n % 2 === 0);
 }
 
 function onlyOneWord(array) {
@@ -12,8 +12,7 @@ function positiveRowsOnly(array) {
 
 function checkSameVowels(word) {
   const vowels = ['a', 'e', 'i', 'o', 'u'];
-  const arrWord = Array.from(word);
-  const onlyVowels = arrWord.filter(letter => vowels.includes(letter));
+  const onlyVowels = Array.from(word).filter(letter => vowels.includes(letter));
   if (onlyVowels.length !== 0) {
     const firstAppearance = onlyVowels[0];
     const isSameVowel = (currentVowel) => currentVowel === firstAppearance;
