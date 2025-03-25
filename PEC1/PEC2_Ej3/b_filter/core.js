@@ -31,5 +31,6 @@ module.exports = {
   onlyEven,
   onlyOneWord,
   positiveRowsOnly,
-  allSameVowels
+  allSameVowels,
+  checkSameVowels
 };
