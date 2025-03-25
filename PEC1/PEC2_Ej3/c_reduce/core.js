@@ -25,7 +25,17 @@ function objectify(array) {
 }
 
 function luckyNumbers(array) {
-  // your code here
+  return array.reduce((sentence, val, index) => {
+    if (index === 0) {
+      return 'Your lucky numbers are: ' + val.toString() + ', ';
+    }
+    if (index === array.length - 1) {
+      return sentence + 'and ' + val;
+    }
+    else {
+      return sentence + val + ', ';
+    }
+  }, '');
 }
 
 module.exports = {
@@ -34,5 +44,3 @@ module.exports = {
   objectify,
   luckyNumbers
 };
-
-objectify([['Thundercats', '80s'], ['The Powerpuff Girls', '90s'], ['Sealab 2021', '00s']])
