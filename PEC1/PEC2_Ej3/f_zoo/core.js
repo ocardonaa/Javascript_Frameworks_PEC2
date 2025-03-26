@@ -7,8 +7,7 @@ function calculatePrice(person, prices) {
     if (key[0] === keyPerson) {
       valueTicket = key[1] * person[keyPerson];
     }
-  }
-  );
+  });
   return valueTicket;
 }
 
@@ -24,7 +23,7 @@ function entryCalculator(entrants) {
         return calculatePrice(elem, prices);
       }
       else {
-        return totalPrice + calculatePrice(elem, prices)
+        return totalPrice + calculatePrice(elem, prices);
       }
     }, 0);
   }
@@ -53,27 +52,68 @@ function schedule(dayName) {
     }, {});
   }
   else {
-    const oneDay = Object.entries(days).filter(day => day[0] === dayName);
-    if (itIsMonday(oneDay[0][1].open, oneDay[0][1].close)) {
-      return { [oneDay[0][0]]: 'CLOSED' };
+    const oneDay = Object.entries(days).find(day => day[0] === dayName);
+    if (itIsMonday(oneDay[1].open, oneDay[1].close)) {
+      return { [oneDay[0]]: 'CLOSED' };
     }
     else {
-      const daySchedule = mountDayText(oneDay[0][1].open, oneDay[0][1].close);
-      return { [oneDay[0][0]]: daySchedule };
+      const daySchedule = mountDayText(oneDay[1].open, oneDay[1].close);
+      return { [oneDay[0]]: daySchedule };
     }
   }
 }
 
 function animalCount(species) {
-  // your code here
+  const animals = data.animals;
+  if (species === undefined) {
+    return Object.entries(animals).reduce((countAnimals, animal, index) => {
+      if (index === 0) {
+        return { [animal[1].name]: animal[1].residents.length }
+      }
+      else {
+        return { ...countAnimals, [animal[1].name]: animal[1].residents.length }
+      }
+    }, {})
+  }
+  else {
+    const myAnimal = Object.entries(animals).find(animal => animal[1].name === species);
+    return myAnimal[1].residents.length;
+  }
 }
+
 
 function animalMap(options) {
   // your code here
 }
 
 function animalPopularity(rating) {
-  // your code here
+  const animals = data.animals;
+  if (rating === undefined) {
+    return Object.entries(animals).reduce((ratedAnimals, animal, index) => {
+      if (index === 0) {
+        return { [(animal[1].popularity).toString()]: [animal[1].name] }
+      }
+      else {
+        const existingRating = animal[1].popularity;
+        if (existingRating in ratedAnimals) {
+          let existingAnimals = ratedAnimals[existingRating];
+          existingAnimals.push(animal[1].name);
+          return { ...ratedAnimals, [animal[1].popularity]: existingAnimals };
+        }
+        else {
+          return { ...ratedAnimals, [(animal[1].popularity).toString()]: [animal[1].name] };
+        }
+      }
+    }, {});
+  }
+  else {
+    return Object.entries(animals).reduce((numAnimals, animal) => {
+      if(animal[1].popularity === rating) {
+        numAnimals.push(animal[1].name)
+      }
+      return numAnimals;
+    }, []);
+  }
 }
 
 function animalsByIds(ids) {
