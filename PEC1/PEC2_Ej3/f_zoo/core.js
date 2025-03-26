@@ -108,7 +108,7 @@ function animalPopularity(rating) {
   }
   else {
     return Object.entries(animals).reduce((numAnimals, animal) => {
-      if(animal[1].popularity === rating) {
+      if (animal[1].popularity === rating) {
         numAnimals.push(animal[1].name)
       }
       return numAnimals;
@@ -116,20 +116,71 @@ function animalPopularity(rating) {
   }
 }
 
-function animalsByIds(ids) {
-  // your code here
+function findElements(id, elements) {
+  const foundElements = Object.entries(elements).find(element => element[1].id === id);
+  return foundElements[1];
+
 }
 
+function findByIds(ids, elements) {
+  if (typeof ids === 'string') {
+    const myElement = Object.entries(elements).find(elem => elem[1].id === ids);
+    return [myElement[1]];
+  }
+  else {
+    const myAnimals = Object.entries(ids).map(id => findElements(id[1], elements));
+    return myAnimals;
+  }
+}
+
+function animalsByIds(ids) {
+  if (ids === undefined) {
+    return [];
+  }
+  else {
+    const animals = data.animals;
+    return findByIds(ids, animals);
+  }
+}
+
+
 function animalByName(animalName) {
-  // your code here
+  if (animalName === undefined) {
+    return {}
+  }
+  else {
+    const animals = data.animals;
+    let myAnimal = {};
+    const foundAnimal = Object.entries(animals).find(animal => animal[1].residents.find(subAnimal => {
+      myAnimal = subAnimal;
+      return subAnimal.name === animalName;
+    }));
+    myAnimal['species'] = foundAnimal[1].name;
+    return myAnimal;
+  }
 }
 
 function employeesByIds(ids) {
-  // your code here
+  if (ids === undefined) {
+    return [];
+  }
+  else {
+    const employees = data.employees;
+    return findByIds(ids, employees);
+  }
 }
 
 function employeeByName(employeeName) {
-  // your code here
+  if (employeeName === undefined) {
+    return {};
+  }
+  else {
+    const employees = data.employees;
+    const myEmployee = Object.entries(employees).find(employee => {
+      return employee[1].firstName === employeeName || employee[1].lastName === employeeName;
+    });
+    return myEmployee[1];
+  }
 }
 
 function managersForEmployee(idOrName) {
