@@ -183,12 +183,30 @@ function employeeByName(employeeName) {
   }
 }
 
+function findManagerName(manager) {
+  const foundManager = employeesByIds(manager);
+  return foundManager[0].firstName + ' ' + foundManager[0].lastName;
+}
+
 function managersForEmployee(idOrName) {
-  // your code here
+  if (idOrName === undefined) {
+    return {};
+  }
+  else {
+    const myEmployee = (idOrName.includes('-')) ? employeesByIds(idOrName) : [employeeByName(idOrName)];
+    const managers = myEmployee[0].managers;
+    const namedManagers = Object.entries(managers).map(manager => findManagerName(manager[1]));
+    myEmployee[0].managers = namedManagers;
+    return myEmployee[0];
+  }
 }
 
 function employeeCoverage(idOrName) {
-  // your code here
+  const animals = data.animals;
+  const employees = data.employees;
+  if (idOrName === undefined) {
+    
+  }
 }
 
 module.exports = {
