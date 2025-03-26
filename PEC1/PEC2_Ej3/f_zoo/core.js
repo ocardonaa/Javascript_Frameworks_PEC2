@@ -81,9 +81,73 @@ function animalCount(species) {
   }
 }
 
+function getArrNames(animal, sex) {
+  let arrNames = [];
+  animal[1].residents.forEach(resident => {
+    if (sex === undefined) {
+      arrNames.push(resident.name);
+    }
+    else {
+      const correctAnimal = (sex === resident.sex) ? resident.name : '';
+      if (correctAnimal !== '') {
+        arrNames.push(correctAnimal);
+      }
+    }
+  })
+  return arrNames;
+}
+
+function mountDictionary(key, elements, pushElem) {
+  if (key in elements) {
+    let existingElements = elements[key];
+    existingElements.push(pushElem);
+    return { ...elements, [key]: existingElements }
+  }
+  else {
+    return { ...elements, [key]: [pushElem] }
+  }
+}
 
 function animalMap(options) {
-  // your code here
+  const animals = data.animals;
+  if (options === undefined) {
+    return Object.entries(animals).reduce((allAnimals, animal, index) => {
+      if (index === 0) {
+        return { [animal[1].location]: [animal[1].name] };
+      }
+      else {
+        return mountDictionary(animal[1].location, allAnimals, animal[1].name);
+      }
+    }, {});
+  }
+  if (options['includeNames'] === undefined && options['sex'] !== undefined) {
+    return Object.entries(animals).reduce((allAnimals, animal, index) => {
+      const checkGender = animal[1].residents.some(subAnimal => subAnimal.sex === options['sex']);
+      if (checkGender) {
+        if (index === 0) {
+          return { [animal[1].location]: [animal[1].name] };
+        }
+        else {
+          return mountDictionary(animal[1].location, allAnimals, animal[1].name);
+        }
+      }
+      else {
+        return allAnimals;
+      }
+    }, {});
+  }
+  else {
+    return Object.entries(animals).reduce((allAnimals, animal, index) => {
+      const allAnimalNames = getArrNames(animal, options['sex']);
+      const animalObj = { [animal[1].name]: allAnimalNames };
+      if (index === 0) {
+        return { [animal[1].location]: [animalObj] };
+      }
+      else {
+        return mountDictionary(animal[1].location, allAnimals, animalObj);
+      }
+    }, {});
+  }
 }
 
 function animalPopularity(rating) {
@@ -91,18 +155,10 @@ function animalPopularity(rating) {
   if (rating === undefined) {
     return Object.entries(animals).reduce((ratedAnimals, animal, index) => {
       if (index === 0) {
-        return { [(animal[1].popularity).toString()]: [animal[1].name] }
+        return { [(animal[1].popularity).toString()]: [animal[1].name] };
       }
       else {
-        const existingRating = animal[1].popularity;
-        if (existingRating in ratedAnimals) {
-          let existingAnimals = ratedAnimals[existingRating];
-          existingAnimals.push(animal[1].name);
-          return { ...ratedAnimals, [animal[1].popularity]: existingAnimals };
-        }
-        else {
-          return { ...ratedAnimals, [(animal[1].popularity).toString()]: [animal[1].name] };
-        }
+        return mountDictionary(animal[1].popularity, ratedAnimals, animal[1].name);
       }
     }, {});
   }
@@ -201,11 +257,30 @@ function managersForEmployee(idOrName) {
   }
 }
 
+function processAnimalSpecie(id) {
+  const myAnimal = animalsByIds(id);
+  return myAnimal[0].name;
+}
+
 function employeeCoverage(idOrName) {
-  const animals = data.animals;
   const employees = data.employees;
   if (idOrName === undefined) {
-    
+    return Object.entries(employees).reduce((employeesAnimals, employee, index) => {
+      const employeeFullName = employee[1].firstName + ' ' + employee[1].lastName;
+      const getAnimalsNames = employee[1].responsibleFor.map(animal => processAnimalSpecie(animal));
+      if (index === 0) {
+        return { [employeeFullName]: getAnimalsNames };
+      }
+      else {
+        return { ...employeesAnimals, [employeeFullName]: getAnimalsNames };
+      }
+    }, {});
+  }
+  else {
+    const myEmployee = (idOrName.includes('-')) ? employeesByIds(idOrName) : [employeeByName(idOrName)];
+    const employeeFullName = myEmployee[0].firstName + ' ' + myEmployee[0].lastName;
+    const getAnimalsNames = myEmployee[0].responsibleFor.map(animal => processAnimalSpecie(animal));
+    return { [employeeFullName]: getAnimalsNames };
   }
 }
 
