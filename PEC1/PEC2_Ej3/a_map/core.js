@@ -10,18 +10,12 @@ function shiftRight(array) {
 }
 
 function getVowels(word, vowels) {
-  let finalWord = '';
-  for (let letter of word) {
-    if (vowels.includes(letter)) {
-      finalWord += letter;
-    }
-  }
-  return finalWord;
+  return filteredConsonants = Array.from(word).filter(letter => vowels.includes(letter));
 }
 
 function onlyVowels(array) {
   const vowels = ['a', 'e', 'i', 'o', 'u'];
-  return array.map(word => getVowels(word, vowels));
+  return array.map(word => getVowels(word, vowels).join(''));
 }
 
 function doubleMatrix(array) {
@@ -32,5 +26,6 @@ module.exports = {
   multiplyBy10,
   shiftRight,
   onlyVowels,
-  doubleMatrix
+  doubleMatrix,
+  getVowels
 };

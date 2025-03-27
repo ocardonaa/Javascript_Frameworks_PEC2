@@ -1,3 +1,5 @@
+const map_functions = require('../a_map/core')
+
 function onlyEven(array) {
   return array.filter(n => n % 2 === 0);
 }
@@ -12,7 +14,7 @@ function positiveRowsOnly(array) {
 
 function checkSameVowels(word) {
   const vowels = ['a', 'e', 'i', 'o', 'u'];
-  const onlyVowels = Array.from(word).filter(letter => vowels.includes(letter));
+  const onlyVowels = map_functions.getVowels(word, vowels);
   if (onlyVowels.length !== 0) {
     const firstAppearance = onlyVowels[0];
     const isSameVowel = (currentVowel) => currentVowel === firstAppearance;

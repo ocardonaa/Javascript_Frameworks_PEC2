@@ -1,16 +1,5 @@
 const data = require('./data');
 
-function calculatePrice(person, prices) {
-  const keyPerson = Object.keys(person).toString();
-  let valueTicket = 0;
-  Object.entries(prices).forEach(key => {
-    if (key[0] === keyPerson) {
-      valueTicket = key[1] * person[keyPerson];
-    }
-  });
-  return valueTicket;
-}
-
 function entryCalculator(entrants) {
   if (entrants === undefined || entrants.length === 0) {
     return 0;
@@ -18,13 +7,9 @@ function entryCalculator(entrants) {
   else {
     const prices = data.prices;
     const arrAmountPers = Object.keys(entrants).map(key => ({ [key]: entrants[key] }));
-    return arrAmountPers.reduce((totalPrice, elem, index) => {
-      if (index === 0) {
-        return calculatePrice(elem, prices);
-      }
-      else {
-        return totalPrice + calculatePrice(elem, prices);
-      }
+    return arrAmountPers.reduce((totalPrice, elem) => {
+      const keyPerson = Object.keys(elem);
+      return totalPrice + elem[keyPerson] * prices[keyPerson];
     }, 0);
   }
 }
@@ -68,12 +53,12 @@ function animalCount(species) {
   if (species === undefined) {
     return Object.entries(animals).reduce((countAnimals, animal, index) => {
       if (index === 0) {
-        return { [animal[1].name]: animal[1].residents.length }
+        return { [animal[1].name]: animal[1].residents.length };
       }
       else {
-        return { ...countAnimals, [animal[1].name]: animal[1].residents.length }
+        return { ...countAnimals, [animal[1].name]: animal[1].residents.length };
       }
-    }, {})
+    }, {});
   }
   else {
     const myAnimal = Object.entries(animals).find(animal => animal[1].name === species);
@@ -165,7 +150,7 @@ function animalPopularity(rating) {
   else {
     return Object.entries(animals).reduce((numAnimals, animal) => {
       if (animal[1].popularity === rating) {
-        numAnimals.push(animal[1].name)
+        numAnimals.push(animal[1].name);
       }
       return numAnimals;
     }, []);
@@ -175,7 +160,6 @@ function animalPopularity(rating) {
 function findElements(id, elements) {
   const foundElements = Object.entries(elements).find(element => element[1].id === id);
   return foundElements[1];
-
 }
 
 function findByIds(ids, elements) {
@@ -202,7 +186,7 @@ function animalsByIds(ids) {
 
 function animalByName(animalName) {
   if (animalName === undefined) {
-    return {}
+    return {};
   }
   else {
     const animals = data.animals;
